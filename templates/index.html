@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AI Rasm va Matn Tarjimoni</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --text-primary: rgba(255, 255, 255, 0.95);
+            --text-secondary: rgba(203, 213, 225, 0.88);
+            --accent-gradient: linear-gradient(135deg, #0ea5e9 0%, #3b82f6 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: #0f172a url("{{ url_for('static', filename='windows-11-50th-3840x2160-25532.jpg') }}") no-repeat center center fixed;
+            background-size: cover;
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 700px;
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .logo-area i {
+            color: #38bdf8;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 10px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #fff;
+            padding: 10px 8px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: 0.25s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            text-align: center;
+        }
+
+        .tab-btn.active, .tab-btn:active {
+            background: var(--accent-gradient);
+            border-color: transparent;
+        }
+
+        .section-view {
+            display: none;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .section-view.active {
+            display: flex;
+        }
+
+        textarea {
+            width: 100%;
+            height: 130px;
+            background: rgba(0, 0, 0, 0.35);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 12px;
+            border-radius: 14px;
+            color: var(--text-primary);
+            outline: none;
+            font-size: 0.95rem;
+            resize: vertical;
+        }
+
+        .file-upload-box {
+            border: 2px dashed rgba(56, 189, 248, 0.4);
+            padding: 24px 12px;
+            text-align: center;
+            border-radius: 14px;
+            cursor: pointer;
+            background: rgba(0, 0, 0, 0.25);
+            transition: 0.25s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .file-upload-box input {
+            display: none;
+        }
+
+        .btn {
+            background: var(--accent-gradient);
+            border: none;
+            color: #fff;
+            padding: 14px;
+            border-radius: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 0.95rem;
+            width: 100%;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .translation-result {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            padding: 14px;
+            border-radius: 14px;
+            min-height: 110px;
+            max-height: 250px;
+            overflow-y: auto;
+            color: #e2e8f0;
+            line-height: 1.5;
+            font-size: 0.9rem;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        /* --- Mobil Qurilmalar uchun Moslashuvchanlik --- */
+        @media (max-width: 480px) {
+            body {
+                padding: 8px;
+                align-items: flex-start;
+            }
+
+            .container {
+                padding: 16px;
+                border-radius: 16px;
+            }
+
+            .logo-area {
+                font-size: 1.1rem;
+            }
+
+            .tab-btn {
+                font-size: 0.8rem;
+                padding: 8px;
+            }
+
+            textarea {
+                height: 110px;
+                font-size: 0.9rem;
+            }
+
+            .btn {
+                padding: 12px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="logo-area">
+        <i class="fa-solid fa-wand-magic-sparkles"></i>
+        <span>AI Tarjimon</span>
+    </div>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('text', this)"><i class="fa-solid fa-align-left"></i> Matn</button>
+        <button class="tab-btn" onclick="switchTab('image', this)"><i class="fa-solid fa-camera"></i> Rasm / Kamera</button>
+    </div>
+
+    <!-- Matn Tarjima Bo'limi -->
+    <div id="textView" class="section-view active">
+        <p style="color: var(--text-secondary); font-size: 0.85rem;">Matnni kiriting, AI o'zbek tiliga tarjima qilib beradi.</p>
+        <textarea id="inputText" placeholder="Matnni shu yerga yozing yoki nusxalab tashlang..."></textarea>
+        <button class="btn" onclick="translateText()">
+            <i class="fa-solid fa-language"></i> Tarjima Qilish
+        </button>
+    </div>
+
+    <!-- Rasm Tarjima Bo'limi -->
+    <div id="imageView" class="section-view">
+        <p style="color: var(--text-secondary); font-size: 0.85rem;">Rasmni yuklang yoki kameradan rasmga olib tashlang.</p>
+
+        <label class="file-upload-box" id="dropZone">
+            <i class="fa-solid fa-camera" style="font-size: 1.8rem; color: #38bdf8; margin-bottom: 6px;"></i>
+            <p id="fileNameText" style="font-size: 0.85rem;">Rasm tanlash / Kamera orqali tushirish</p>
+            <input type="file" id="imageInput" accept="image/*" onchange="previewImageName()">
+        </label>
+
+        <button class="btn" onclick="translateImage()">
+            <i class="fa-solid fa-eye"></i> Rasmni AI orqali Tarjima Qilish
+        </button>
+    </div>
+
+    <h4 style="color: #38bdf8; font-size: 0.95rem; margin-top: 4px;">Natija:</h4>
+    <div id="outputResult" class="translation-result">
+        Natija shu yerda ko'rsatiladi...
+    </div>
+</div>
+
+<script>
+    function switchTab(tab, element) {
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.section-view').forEach(view => view.classList.remove('active'));
+
+        element.classList.add('active');
+
+        if (tab === 'text') {
+            document.getElementById('textView').classList.add('active');
+        } else {
+            document.getElementById('imageView').classList.add('active');
+        }
+        document.getElementById('outputResult').innerText = "Natija shu yerda ko'rsatiladi...";
+    }
+
+    function previewImageName() {
+        const input = document.getElementById('imageInput');
+        const text = document.getElementById('fileNameText');
+        if (input.files.length > 0) {
+            text.innerText = "Tanlandi: " + input.files[0].name;
+        }
+    }
+
+    async function translateText() {
+        const text = document.getElementById('inputText').value;
+        const output = document.getElementById('outputResult');
+        if (!text.trim()) {
+            alert("Iltimos, matn kiriting!");
+            return;
+        }
+
+        output.innerText = "Tarjima qilinmoqda, kuting...";
+        try {
+            const res = await fetch('/api/translate-text', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ text })
+            });
+            const data = await res.json();
+            output.innerText = data.result || data.error;
+        } catch (e) {
+            output.innerText = "Server bilan xatolik yuz berdi.";
+        }
+    }
+
+    async function translateImage() {
+        const input = document.getElementById('imageInput');
+        const output = document.getElementById('outputResult');
+        if (input.files.length === 0) {
+            alert("Iltimos, avval rasm tanlang!");
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('image', input.files[0]);
+
+        output.innerText = "AI rasmdagi matnni o'qib, tarjima qilmoqda, kuting...";
+        try {
+            const res = await fetch('/api/translate-image', {
+                method: 'POST',
+                body: formData
+            });
+            const data = await res.json();
+            output.innerText = data.result || data.error;
+        } catch (e) {
+            output.innerText = "Rasm yuklashda yoki tarjima qilishda xatolik yuz berdi.";
+        }
+    }
+</script>
+</body>
+</html>
